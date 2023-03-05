@@ -21,7 +21,7 @@ To use the Translucent Window Background Style in your SwiftUI app, follow these
    ```swift
    WindowGroup {
        ContentView()
-          .presentedWindowBackgroundStyle(TranslucentBackgroundStyle.hiddenTitleBarTranslucent)
+          .presentedWindowBackgroundStyle(.hiddenTitleBarTranslucent)
    }
    ```
 
