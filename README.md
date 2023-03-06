@@ -49,7 +49,7 @@ The Translucent Window Background Style package can be installed via Swift Packa
    https://github.com/DominatorVbN/TranslucentWindowBackgroundStyle
    ```
 
-   Replace "your-username" with your GitHub username or the URL of your forked repository.
+   Replace "your-username" with your GitHub username or the URL of your forked repository if you want to used the foked version in your app.
 
 4. Choose the version or branch of the package that you want to install.
 
@@ -63,7 +63,7 @@ The Translucent Window Background Style package can be installed via Swift Packa
    ]
    ```
 
-   Replace "your-username" with your GitHub username or the URL of your forked repository, and "1.0.0" with the version or branch that you installed.
+   Replace "your-username" with your GitHub username or the URL of your forked repository if you want to used the foked version in your app., and "1.0.0" with the version or branch that you installed.
 
 7. Import the package in your SwiftUI view file:
 
