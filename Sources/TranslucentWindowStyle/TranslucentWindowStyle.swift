@@ -64,11 +64,11 @@ struct TranslucentWindowBackground: NSViewRepresentable {
             contentViewCofiguration: .embed(getTranlucentBackground()),
             styleMaskConfiguration: .insert(.titled),
             titlebarAppearsTransparent: true,
-            titleVisibility: .hidden,
+            titleVisibility: .visible,
             standardWindowButtonConfig: StandardWindowButtonConfiguration(
-                miniaturizeButtonIsHidden: true,
-                closeButtonIsHidden: true,
-                zoomButtonIsHidden: true
+                miniaturizeButtonIsHidden: false,
+                closeButtonIsHidden: false,
+                zoomButtonIsHidden: false
             ),
             isMovableByWindowBackground: true
         )
