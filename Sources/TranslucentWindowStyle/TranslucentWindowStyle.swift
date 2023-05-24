@@ -1,5 +1,6 @@
+#if os(macOS)
 import SwiftUI
-
+import AppKit
 
 public protocol WindowBackgroundStyle {
     associatedtype Body : View
@@ -17,15 +18,12 @@ public struct TranslucentBackgroundStyle: WindowBackgroundStyle {
 }
 
 extension View {
-    
     @MainActor public func presentedWindowBackgroundStyle<S>(_ style: S) -> some View where S : WindowBackgroundStyle {
         self.background(style.backgroud)
     }
-
 }
 
 struct TranslucentWindowBackground: NSViewRepresentable {
-    
     enum ContentViewConfiguration {
         case embed(NSView?)
         case replace(NSView?)
@@ -66,11 +64,11 @@ struct TranslucentWindowBackground: NSViewRepresentable {
             contentViewCofiguration: .embed(getTranlucentBackground()),
             styleMaskConfiguration: .insert(.titled),
             titlebarAppearsTransparent: true,
-            titleVisibility: .hidden,
+            titleVisibility: .visible,
             standardWindowButtonConfig: StandardWindowButtonConfiguration(
-                miniaturizeButtonIsHidden: true,
-                closeButtonIsHidden: true,
-                zoomButtonIsHidden: true
+                miniaturizeButtonIsHidden: false,
+                closeButtonIsHidden: false,
+                zoomButtonIsHidden: false
             ),
             isMovableByWindowBackground: true
         )
@@ -107,11 +105,9 @@ struct TranslucentWindowBackground: NSViewRepresentable {
         }
     }
     
-    
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
-    
     
     class Coordinator: NSObject {
         private var _originalWindowConfiguration: WindowConfiguration?
@@ -157,7 +153,6 @@ struct TranslucentWindowBackground: NSViewRepresentable {
     }
     
     func updateNSView(_ nsView: NSView, context: Context) {
-        
     }
     
     static func dismantleNSView(_ nsView: NSView, coordinator: Coordinator) {
@@ -167,5 +162,4 @@ struct TranslucentWindowBackground: NSViewRepresentable {
         coordinator.resetWindow(window: window)
     }
 }
-
-
+#endif
