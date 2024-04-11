@@ -7,12 +7,17 @@ public protocol WindowBackgroundStyle {
 }
 
 extension WindowBackgroundStyle where Self == TranslucentBackgroundStyle {
-    public static var hiddenTitleBar: TranslucentBackgroundStyle { TranslucentBackgroundStyle() }
+    public static var hiddenTitleBar: TranslucentBackgroundStyle { TranslucentBackgroundStyle(config: .translucent) }
+    
+    public static func hiddenTitleBar(material: NSVisualEffectView.Material) -> TranslucentBackgroundStyle {
+        TranslucentBackgroundStyle(config: .translucent(material: material))
+    }
 }
 
 public struct TranslucentBackgroundStyle: WindowBackgroundStyle {
+    let config: TranslucentWindowBackground.WindowConfiguration
     public var backgroud: some View {
-        TranslucentWindowBackground()
+        TranslucentWindowBackground(config: config)
     }
 }
 
@@ -25,6 +30,8 @@ extension View {
 }
 
 struct TranslucentWindowBackground: NSViewRepresentable {
+    
+    let config: WindowConfiguration
     
     enum ContentViewConfiguration {
         case embed(NSView?)
@@ -52,18 +59,18 @@ struct TranslucentWindowBackground: NSViewRepresentable {
             let zoomButtonIsHidden: Bool
         }
         
-        static func getTranlucentBackground() -> NSView {
+        static func getTranlucentBackground(material: NSVisualEffectView.Material) -> NSView {
             let visualEffect = NSVisualEffectView()
             visualEffect.blendingMode = .behindWindow
             visualEffect.state = .followsWindowActiveState
-            visualEffect.material = .sidebar
+            visualEffect.material = material
             return visualEffect
         }
         
         static let translucent: WindowConfiguration = WindowConfiguration(
             isOpaque: false,
             backgroundColor: NSColor.clear,
-            contentViewCofiguration: .embed(getTranlucentBackground()),
+            contentViewCofiguration: .embed(getTranlucentBackground(material: .sidebar)),
             styleMaskConfiguration: .insert(.titled),
             titlebarAppearsTransparent: true,
             titleVisibility: .hidden,
@@ -74,6 +81,23 @@ struct TranslucentWindowBackground: NSViewRepresentable {
             ),
             isMovableByWindowBackground: true
         )
+        
+        static func translucent(material: NSVisualEffectView.Material) -> WindowConfiguration {
+            WindowConfiguration(
+                isOpaque: false,
+                backgroundColor: NSColor.clear,
+                contentViewCofiguration: .embed(getTranlucentBackground(material: material)),
+                styleMaskConfiguration: .insert(.titled),
+                titlebarAppearsTransparent: true,
+                titleVisibility: .hidden,
+                standardWindowButtonConfig: StandardWindowButtonConfiguration(
+                    miniaturizeButtonIsHidden: true,
+                    closeButtonIsHidden: true,
+                    zoomButtonIsHidden: true
+                ),
+                isMovableByWindowBackground: true
+            )
+        }
         
         static func configure(window: NSWindow, forConfig config: WindowConfiguration) {
             
@@ -109,12 +133,18 @@ struct TranslucentWindowBackground: NSViewRepresentable {
     
     
     func makeCoordinator() -> Coordinator {
-        Coordinator()
+        Coordinator(config: config)
     }
     
     
     class Coordinator: NSObject {
+        
+        let config: WindowConfiguration
         private var _originalWindowConfiguration: WindowConfiguration?
+        
+        init(config: WindowConfiguration) {
+            self.config = config
+        }
         
         func createWindowConfigurationForCurrentContext(_ context: NSWindow) -> WindowConfiguration {
             WindowConfiguration(
@@ -136,7 +166,7 @@ struct TranslucentWindowBackground: NSViewRepresentable {
         func makeWindowTranslucent(window: NSWindow?) {
             guard let window = window else { return }
             self._originalWindowConfiguration = createWindowConfigurationForCurrentContext(window)
-            let translucentWindowConfiguration = WindowConfiguration.translucent
+            let translucentWindowConfiguration = config
             WindowConfiguration.configure(window: window, forConfig: translucentWindowConfiguration)
         }
         
